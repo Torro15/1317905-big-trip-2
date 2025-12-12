@@ -22,26 +22,11 @@ function humanizeFullDate(dueDate) {
 }
 
 function humanizePointDuration(dateFrom, dateTo) {
-  const start = dayjs(dateFrom);
-  const end = dayjs(dateTo);
+  const diff = dayjs(dateTo).diff(dayjs(dateFrom));
+  const dur = dayjs.duration(diff);
 
-  const diffInMinutes = end.diff(start, 'minute');
 
-  const dur = dayjs.duration(diffInMinutes, 'minutes');
-
-  const days = Math.floor(dur.asDays());
-  const hours = dur.hours();
-  const minutes = dur.minutes();
-
-  if (days > 0) {
-    return `${String(days).padStart(2, '0')}D ${String(hours).padStart(2, '0')}H ${String(minutes).padStart(2, '0')}M`;
-  }
-
-  if (hours > 0) {
-    return `${String(hours).padStart(2, '0')}H ${String(minutes).padStart(2, '0')}M`;
-  }
-
-  return `${minutes}M`;
+  return dur.format('DD[D] HH[H] mm[M]');
 }
 
 export {humanizeTaskDate, humanizeTaskTime, humanizeFullDate, humanizePointDuration};
