@@ -25,7 +25,6 @@ function humanizePointDuration(dateFrom, dateTo) {
   const diff = dayjs(dateTo).diff(dayjs(dateFrom));
   const dur = dayjs.duration(diff);
 
-
   return dur.format('DD[D] HH[H] mm[M]');
 }
 
