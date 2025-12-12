@@ -34,8 +34,7 @@ export const mockTravelPoints = [
     destination: 'bfa5cb75-a1fe-4b77-a83c-0e528e910e03',
     isFavorite: false,
     offers: [
-      'b4c3e4e6-9053-42ce-b747-e281314baa33',
-      'b4c3e4e6-9053-42ce-b747-e281314baa35'
+      'b4c3e4e6-9053-42ce-b747-e281314baa33'
     ],
     type: 'bus'
   },
