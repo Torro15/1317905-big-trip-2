@@ -25,8 +25,7 @@ export default class TripPresenter {
         point: this.tripPoints[0],
         offers: this.pointsModel.getOffersByType(this.tripPoints[0].type),
         selectedOffers: this.tripPoints[0].offers,
-        allDestinations: this.allDestinations,
-        currentDestination: this.pointsModel.getDestinationById(this.tripPoints[0].destination),
+        destinations: this.allDestinations,
       }),
       this.pointsListView.getElement()
 
@@ -40,9 +39,7 @@ export default class TripPresenter {
             this.tripPoints[i].type,
             this.tripPoints[i].offers
           ),
-          destination: this.pointsModel.getDestinationById(
-            this.tripPoints[i].destination
-          ),
+          destinations: this.allDestinations,
         }),
         this.pointsListView.getElement()
       );

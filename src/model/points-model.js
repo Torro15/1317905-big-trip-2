@@ -27,7 +27,4 @@ export default class PointModel {
     return this.destinations;
   }
 
-  getDestinationById(id) {
-    return this.destinations.find((dest) => dest.id === id);
-  }
 }

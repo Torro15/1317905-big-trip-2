@@ -80,7 +80,7 @@ function createDestinationTemplate (currentDestination) {
 }
 
 
-function createPointEditViewTemplate (point, offers, selectedOffers, currentDestination, allDestinations) {
+function createPointEditViewTemplate (point, offers, selectedOffers, currentDestination, destinations) {
   const { id, type, dateFrom, dateTo, basePrice } = point;
   const { name } = currentDestination;
 
@@ -112,7 +112,7 @@ function createPointEditViewTemplate (point, offers, selectedOffers, currentDest
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
                     <datalist id="destination-list-${id}">
-                      ${allDestinations.map((dest) => `<option value="${dest.name}"></option>`).join('')}
+                      ${destinations.map((dest) => `<option value="${dest.name}"></option>`).join('')}
                     </datalist>
                   </div>
 
@@ -148,17 +148,19 @@ function createPointEditViewTemplate (point, offers, selectedOffers, currentDest
 }
 
 export default class PointEditView {
-  constructor({point, offers, selectedOffers ,currentDestination, allDestinations}) {
+  constructor({point, offers, selectedOffers , destinations}) {
     this.point = point;
     this.offers = offers;
     this.selectedOffers = selectedOffers;
-    this.currentDestination = currentDestination;
-    this.allDestinations = allDestinations;
+    this.destinations = destinations;
 
+    this.currentDestination = destinations.find(
+      (dest) => dest.id === point.destination
+    ) || { name: '', description: '', pictures: [] };
   }
 
   getTemplate() {
-    return createPointEditViewTemplate(this.point, this.offers, this.selectedOffers, this.currentDestination, this.allDestinations);
+    return createPointEditViewTemplate(this.point, this.offers, this.selectedOffers, this.currentDestination, this.destinations);
   }
 
   getElement() {
