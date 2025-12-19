@@ -28,7 +28,7 @@ export default class TripPresenter {
         destinations: this.allDestinations,
       }),
       this.pointsListView.getElement(),
-      'afterbegin'
+      'AFTERBEGIN'
     );
 
 
