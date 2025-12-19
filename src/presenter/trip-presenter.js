@@ -1,4 +1,4 @@
-import { render } from '../render.js';
+import { RenderPosition, render } from '../render.js';
 import SortView from '../view/sort-view.js';
 import PointView from '../view/point-view.js';
 import PointsListView from '../view/points-list-view.js';
@@ -28,7 +28,7 @@ export default class TripPresenter {
         destinations: this.allDestinations,
       }),
       this.pointsListView.getElement(),
-      'AFTERBEGIN'
+      RenderPosition.AFTERBEGIN
     );
 
 
