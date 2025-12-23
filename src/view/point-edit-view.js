@@ -192,7 +192,7 @@ export default class PointEditView extends AbstractView {
 
     this.#rollupBtn = this.element.querySelector('.event__rollup-btn');
     if (this.#rollupBtn) {
-      this.#rollupBtn.addEventListener('click', this.#rollupButtonClicker);
+      this.#rollupBtn.addEventListener('click', this.#buttonRollupClick);
     }
 
   }
@@ -201,7 +201,7 @@ export default class PointEditView extends AbstractView {
     return createPointEditViewTemplate(this.#point, this.#offers, this.#selectedOffers, this.#currentDestination, this.#destinations);
   }
 
-  #rollupButtonClicker = (evt) => {
+  #buttonRollupClick = (evt) => {
     evt.preventDefault();
     this.#rollupButtonClick();
   };
