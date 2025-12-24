@@ -62,7 +62,6 @@ export default class PointView extends AbstractView {
 
   #point = null;
   #offers = null;
-  #destinations = null;
   #destination = null;
 
   #rollupButtonClick = null;
@@ -71,7 +70,6 @@ export default class PointView extends AbstractView {
     super();
     this.#point = point;
     this.#offers = offers;
-    this.#destinations = destinations;
 
     this.#destination = destinations.find(
       (dest) => dest.id === point.destination
