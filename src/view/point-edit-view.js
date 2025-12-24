@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeFullDate } from '../utils.js';
 import { POINTS_TYPES } from '../const.js';
 
@@ -161,31 +161,55 @@ function createPointEditViewTemplate (point, offers, selectedOffers, currentDest
          `;
 }
 
-export default class PointEditView {
-  constructor({point, offers, selectedOffers , destinations}) {
-    this.point = point;
-    this.offers = offers;
-    this.selectedOffers = selectedOffers;
-    this.destinations = destinations;
+export default class PointEditView extends AbstractView {
+  #point = null;
+  #offers = null;
+  #selectedOffers = null;
+  #destinations = null;
+  #currentDestination = null;
 
-    this.currentDestination = destinations.find(
+  #rollupButtonClick = null;
+  #handleFormSubmit = null;
+
+  #rollupBtn = null;
+
+  constructor({point, offers, selectedOffers , destinations, onCloseClick, onFormSubmit}) {
+    super();
+    this.#point = point;
+    this.#offers = offers;
+    this.#selectedOffers = selectedOffers;
+    this.#destinations = destinations;
+
+    this.#currentDestination = destinations.find(
       (dest) => dest.id === point.destination
     ) || { name: '', description: '', pictures: [] };
-  }
 
-  getTemplate() {
-    return createPointEditViewTemplate(this.point, this.offers, this.selectedOffers, this.currentDestination, this.destinations);
-  }
+    this.#rollupButtonClick = onCloseClick;
+    this.#handleFormSubmit = onFormSubmit;
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+
+    this.#rollupBtn = this.element.querySelector('.event__rollup-btn');
+    if (this.#rollupBtn) {
+      this.#rollupBtn.addEventListener('click', this.#buttonRollupClick);
     }
 
-    return this.element;
   }
 
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createPointEditViewTemplate(this.#point, this.#offers, this.#selectedOffers, this.#currentDestination, this.#destinations);
   }
+
+  #buttonRollupClick = (evt) => {
+    evt.preventDefault();
+    this.#rollupButtonClick();
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
+
+
 }
