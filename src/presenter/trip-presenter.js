@@ -65,6 +65,10 @@ export default class TripPresenter {
       onFormSubmit: () => {
         replaceFormToPoint();
         document.removeEventListener('keydown', escKeyDownHandler);
+      },
+      onDeleteClick: () => {
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
       }
     });
 
