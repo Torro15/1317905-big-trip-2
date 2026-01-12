@@ -84,5 +84,5 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-export {humanizeTaskDate, humanizeTaskTime, humanizeFullDate, humanizeAttributeFullDate, humanizeAttributeDate,humanizePointDuration, isFuture, isPast, isPresent, updateItem};
+export {humanizeTaskDate, humanizeTaskTime, humanizeFullDate, humanizeAttributeFullDate, humanizeAttributeDate, humanizePointDuration, isFuture, isPast, isPresent, updateItem};
 

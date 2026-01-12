@@ -22,4 +22,21 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-export {POINTS_TYPES, EMPTY_POINT, FilterType, Mode };
+const SortType = {
+  DEFAULT: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};
+
+const SORT_ITEMS = [
+  { type: SortType.DEFAULT, checked: true },
+  { type: SortType.EVENT, disabled: true },
+  { type: SortType.TIME},
+  { type: SortType.PRICE },
+  { type: SortType.OFFERS, disabled: true },
+];
+
+
+export {POINTS_TYPES, EMPTY_POINT, FilterType, Mode, SortType, SORT_ITEMS };
