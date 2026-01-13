@@ -202,20 +202,12 @@ export default class PointEditView extends AbstractStatefulView {
   _restoreHandlers() {
 
 
-    const form = this.element.querySelector('.event.event--edit');
-
-    if (form) {
-
-      form.addEventListener('submit', this.#formSubmitHandler);
-      form.addEventListener('change', this.#offerChangeHandler);
-    }
-
+    this.element.querySelector('.event--edit')?.addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__reset-btn')?.addEventListener('click', this.#buttonDeleteClick);
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#typeChangeHandler);
-    this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#destinationChangeHandler);
-
-
-    this.element.querySelector('.event__input--price')?.addEventListener('input', this.#priceChangeHandler);
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#offerChangeHandler);
+    this.element.querySelector('.event__input--price')?.addEventListener('change', this.#priceChangeHandler);
 
     this.#rollupBtn = this.element.querySelector('.event__rollup-btn');
     if (this.#rollupBtn) {
@@ -279,6 +271,7 @@ export default class PointEditView extends AbstractStatefulView {
     } else {
       newOffers = newOffers.filter((id) => id !== offerId);
     }
+
 
     this.updateElement({
       offers: newOffers
