@@ -44,8 +44,7 @@ export default class PointPresenter {
 
     this.#pointEditComponent = new PointEditView({
       point: this.#point,
-      offers: this.#pointsModel.getOffersByType(point.type),
-      selectedOffers: point.offers,
+      allOffers: this.#pointsModel.offers,
       destinations: this.#allDestinations,
       onCloseClick: this.#closeFormClick,
       onFormSubmit: this.#handleFormSubmit,
@@ -76,6 +75,7 @@ export default class PointPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   }
@@ -96,6 +96,7 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   };
