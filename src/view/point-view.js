@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {humanizeTaskDate,humanizeAttributeDate, humanizeAttributeFullDate, humanizeTaskTime, humanizePointDuration} from '../utils/point.js';
+import {formatDate, humanizePointDuration} from '../utils/point.js';
 
 function createOffersListTemplate ({title, price}) {
   return ` <li class="event__offer">
@@ -13,14 +13,13 @@ function createPointViewTemplate (point, offers, destination) {
   const { type, basePrice, isFavorite, dateFrom, dateTo } = point;
   const { name } = destination;
 
-  const date = humanizeTaskDate(dateFrom);
-  const attributeDate = humanizeAttributeDate (dateFrom);
-  const startTime = humanizeTaskTime(dateFrom);
-  const attributeStartTime = humanizeAttributeFullDate(dateFrom);
-  const endTime = humanizeTaskTime(dateTo);
-  const attributeEndTime = humanizeAttributeFullDate(dateTo);
-  const durationTime = humanizePointDuration (dateFrom, dateTo);
-
+  const date = formatDate(dateFrom, 'taskDate');
+  const attributeDate = formatDate(dateFrom, 'attributeDate');
+  const startTime = formatDate(dateFrom, 'taskTime');
+  const attributeStartTime = formatDate(dateFrom, 'attributeFullDate');
+  const endTime = formatDate(dateTo, 'taskTime');
+  const attributeEndTime = formatDate(dateTo, 'attributeFullDate');
+  const durationTime = humanizePointDuration(dateFrom, dateTo);
   const favoriteClassName = isFavorite ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
 
   return `<li class="trip-events__item">
@@ -29,7 +28,7 @@ function createPointViewTemplate (point, offers, destination) {
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="${type}">
                 </div>
-                <h3 class="event__title">${type} ${name}</h3>
+                <h3 class="event__title">${type[0].toUpperCase() + type.slice(1)} ${name}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
                     <time class="event__start-time" datetime="${attributeStartTime}">${startTime}</time>

@@ -13,7 +13,6 @@ function createFilterTemplate(filterItems, currentFilterType) {
 
 function createFilterItemTemplate(filter, currentFilterType) {
   const { type, count } = filter;
-  const labelText = type.charAt(0).toUpperCase() + type.slice(1);
 
   const isChecked = type === currentFilterType ? 'checked' : '';
   const isDisabled = count === 0 ? 'disabled' : '';
@@ -23,9 +22,7 @@ function createFilterItemTemplate(filter, currentFilterType) {
       <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}"
         ${isChecked}
         ${isDisabled}>
-      <label class="trip-filters__filter-label" for="filter-${type}">
-        ${labelText}
-      </label>
+      <label class="trip-filters__filter-label" for="filter-${type}">${type[0].toUpperCase() + type.slice(1)}</label>
     </div>
   `;
 }
