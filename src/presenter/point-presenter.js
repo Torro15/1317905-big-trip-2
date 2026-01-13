@@ -119,6 +119,7 @@ export default class PointPresenter {
   };
 
   #deleteButtonClick = () => {
+    this.#pointEditComponent.reset(this.#point);
     this.#replaceFormToPoint();
   };
 }
