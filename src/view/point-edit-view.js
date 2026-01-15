@@ -2,6 +2,11 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatDate } from '../utils/point.js';
 import { POINTS_TYPES } from '../const.js';
 
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
+
+
 function createTypeListTemplate(type, currentType, id) {
   const isChecked = type === currentType ? 'checked' : '';
   return `
@@ -166,6 +171,8 @@ export default class PointEditView extends AbstractStatefulView {
   #deleteButtonClick = null;
 
   #rollupBtn = null;
+  #startPicker = null;
+  #endPicker = null;
 
   constructor({point, allOffers, destinations, onCloseClick, onFormSubmit, onDeleteClick}) {
     super();
@@ -193,6 +200,18 @@ export default class PointEditView extends AbstractStatefulView {
     return createPointEditViewTemplate(this._state, offersForType, this._state.offers, currentDestination, this.#destinations);
   }
 
+  removeElement() {
+    if (this.#startPicker) {
+      this.#startPicker.destroy();
+      this.#startPicker = null;
+    }
+    if (this.#endPicker) {
+      this.#endPicker.destroy();
+      this.#endPicker = null;
+    }
+    super.removeElement();
+  }
+
   reset(point) {
     this.updateElement(
       PointEditView.parsePointToState(point),
@@ -205,14 +224,16 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.querySelector('.event--edit')?.addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__reset-btn')?.addEventListener('click', this.#buttonDeleteClick);
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#typeChangeHandler);
-    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#offerChangeHandler);
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offerChangeHandler);
+    this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price')?.addEventListener('change', this.#priceChangeHandler);
 
     this.#rollupBtn = this.element.querySelector('.event__rollup-btn');
     if (this.#rollupBtn) {
       this.#rollupBtn.addEventListener('click', this.#buttonRollupClick);
     }
+
+    this.#setDatepickers();
   }
 
   #buttonRollupClick = (evt) => {
@@ -260,7 +281,7 @@ export default class PointEditView extends AbstractStatefulView {
     if (!checkbox.matches('.event__offer-checkbox')) {
       return;
     }
-    const offerId = checkbox.name.split('-')[2];
+    const offerId = checkbox.name.replace('event-offer-', '');
 
     let newOffers = [...this._state.offers];
 
@@ -277,6 +298,48 @@ export default class PointEditView extends AbstractStatefulView {
       offers: newOffers
     });
   };
+
+  #startDateChangeHandler = (dateStr, selectedDates) => {
+    this.updateElement({
+      dateFrom: dateStr
+    });
+    if (this.#endPicker && selectedDates[0]) {
+      this.#endPicker.set('minDate', selectedDates[0]);
+    }
+  };
+
+  #endDateChangeHandler = (dateStr) => {
+    this.updateElement({
+      dateTo: dateStr
+    });
+    if (this._state.dateFrom && this.#endPicker) {
+      this.#endPicker.set('minDate', new Date(this._state.dateFrom));
+    }
+  };
+
+  #setDatepickers() {
+    const startInput = this.element.querySelector(`#event-start-time-${this._state.id}`);
+    const endInput = this.element.querySelector(`#event-end-time-${this._state.id}`);
+
+    if (!startInput || !endInput) {
+      return;
+    }
+
+
+    this.#startPicker = flatpickr(startInput, {
+      enableTime: true,
+      dateFormat: 'Y-m-d H:i',
+      defaultDate: this._state.dateFrom ? new Date(this._state.dateFrom) : null,
+      onChange: this.#startDateChangeHandler,
+    });
+
+    this.#endPicker = flatpickr(endInput, {
+      enableTime: true,
+      dateFormat: 'Y-m-d H:i',
+      defaultDate: this._state.dateTo ? new Date(this._state.dateTo) : null,
+      onChange: this.#endDateChangeHandler,
+    });
+  }
 
   #priceChangeHandler = (evt) => {
     const newPrice = parseInt(evt.target.value, 10) || 0;
