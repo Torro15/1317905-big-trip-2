@@ -25,17 +25,23 @@ function formatDate(date, formatKey = 'taskDate') {
 function humanizePointDuration(dateFrom, dateTo) {
   const start = dayjs(dateFrom);
   const end = dayjs(dateTo);
-  const diffInMinutes = end.diff(start, 'minute');
-  const dur = dayjs.duration(diffInMinutes, 'minutes');
+  const dur = dayjs.duration(end.diff(start));
+
+  const days = Math.floor(dur.asDays());
+  const hours = dur.hours();
+  const minutes = dur.minutes();
 
   const parts = [];
-  if (dur.days() > 0) {
-    parts.push(`${dur.days().toString().padStart(2, '0')}D`);
+
+  if (days > 0) {
+    parts.push(`${days.toString().padStart(2, '0')}D`);
   }
-  if (dur.days() > 0 || dur.hours() > 0) {
-    parts.push(`${dur.hours().toString().padStart(2, '0')}H`);
+
+  if (days > 0 || hours > 0) {
+    parts.push(`${hours.toString().padStart(2, '0')}H`);
   }
-  parts.push(`${dur.minutes().toString().padStart(2, '0')}M`);
+
+  parts.push(`${minutes.toString().padStart(2, '0')}M`);
 
   return parts.join(' ');
 }
