@@ -200,7 +200,6 @@ export default class PointEditView extends AbstractStatefulView {
     return createPointEditViewTemplate(this._state, offersForType, this._state.offers, currentDestination, this.#destinations);
   }
 
-
   reset(point) {
     this.updateElement(
       PointEditView.parsePointToState(point),
@@ -208,8 +207,6 @@ export default class PointEditView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-
-
     this.element.querySelector('.event--edit')?.addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__reset-btn')?.addEventListener('click', this.#buttonDeleteClick);
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#typeChangeHandler);
@@ -271,7 +268,6 @@ export default class PointEditView extends AbstractStatefulView {
       return;
     }
     const offerId = checkbox.name.replace('event-offer-', '');
-
     let newOffers = [...this._state.offers];
 
     if (checkbox.checked) {
@@ -281,7 +277,6 @@ export default class PointEditView extends AbstractStatefulView {
     } else {
       newOffers = newOffers.filter((id) => id !== offerId);
     }
-
 
     this.updateElement({
       offers: newOffers
@@ -302,15 +297,13 @@ export default class PointEditView extends AbstractStatefulView {
 
 
   #dateChangeHandler = (selectedDates) => {
-    this.updateElement({
+    this._setState({
       dateFrom: selectedDates[0] ? selectedDates[0].toISOString() : null,
       dateTo:   selectedDates[1] ? selectedDates[1].toISOString() : null,
     });
-
   };
 
   #setDatepickers() {
-
     const startInput = this.element.querySelector(`#event-start-time-${this._state.id}`);
     const endInput = this.element.querySelector(`#event-end-time-${this._state.id}`);
 
@@ -326,13 +319,7 @@ export default class PointEditView extends AbstractStatefulView {
       dateFormat: fpFormat,
       mode: 'range',
       plugins: [new rangePlugin({ input: endInput })],
-
-      onChange: this.#dateChangeHandler,
-      onOpen: () => {
-        if (this._state.dateFrom) {
-          this.#startPicker.set('minDate', new Date(this._state.dateFrom));
-        }
-      },
+      onClose: this.#dateChangeHandler,
     });
   }
 
