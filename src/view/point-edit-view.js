@@ -5,7 +5,7 @@ import { POINTS_TYPES } from '../const.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
-
+import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
 
 function createTypeListTemplate(type, currentType, id) {
   const isChecked = type === currentType ? 'checked' : '';
@@ -299,25 +299,21 @@ export default class PointEditView extends AbstractStatefulView {
     });
   };
 
-  #startDateChangeHandler = (dateStr, selectedDates) => {
+
+  #dateChangeHandler = (selectedDates) => {
     this.updateElement({
-      dateFrom: dateStr
+      dateFrom: selectedDates[0] ? selectedDates[0].toISOString() : null,
+      dateTo:   selectedDates[1] ? selectedDates[1].toISOString() : null,
     });
-    if (this.#endPicker && selectedDates[0]) {
-      this.#endPicker.set('minDate', selectedDates[0]);
-    }
+
   };
 
-  #endDateChangeHandler = (dateStr) => {
-    this.updateElement({
-      dateTo: dateStr
-    });
-    if (this._state.dateFrom && this.#endPicker) {
-      this.#endPicker.set('minDate', new Date(this._state.dateFrom));
-    }
-  };
 
   #setDatepickers() {
+
+
+    this.#endPicker = null;
+
     const startInput = this.element.querySelector(`#event-start-time-${this._state.id}`);
     const endInput = this.element.querySelector(`#event-end-time-${this._state.id}`);
 
@@ -325,19 +321,18 @@ export default class PointEditView extends AbstractStatefulView {
       return;
     }
 
+    const fpFormat = 'd/m/y H:i';
 
     this.#startPicker = flatpickr(startInput, {
       enableTime: true,
-      dateFormat: 'Y-m-d H:i',
-      defaultDate: this._state.dateFrom ? new Date(this._state.dateFrom) : null,
-      onChange: this.#startDateChangeHandler,
-    });
+      'time_24hr': true,
+      dateFormat: fpFormat,
+      mode: 'range',
 
-    this.#endPicker = flatpickr(endInput, {
-      enableTime: true,
-      dateFormat: 'Y-m-d H:i',
-      defaultDate: this._state.dateTo ? new Date(this._state.dateTo) : null,
-      onChange: this.#endDateChangeHandler,
+      plugins: [new rangePlugin({ input: endInput })],
+
+
+      onChange: this.#dateChangeHandler,
     });
   }
 
