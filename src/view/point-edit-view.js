@@ -200,17 +200,6 @@ export default class PointEditView extends AbstractStatefulView {
     return createPointEditViewTemplate(this._state, offersForType, this._state.offers, currentDestination, this.#destinations);
   }
 
-  removeElement() {
-    if (this.#startPicker) {
-      this.#startPicker.destroy();
-      this.#startPicker = null;
-    }
-    if (this.#endPicker) {
-      this.#endPicker.destroy();
-      this.#endPicker = null;
-    }
-    super.removeElement();
-  }
 
   reset(point) {
     this.updateElement(
@@ -308,6 +297,17 @@ export default class PointEditView extends AbstractStatefulView {
 
   };
 
+  removeElement() {
+    if (this.#startPicker) {
+      this.#startPicker.destroy();
+      this.#startPicker = null;
+    }
+    if (this.#endPicker) {
+      this.#endPicker.destroy();
+      this.#endPicker = null;
+    }
+    super.removeElement();
+  }
 
   #setDatepickers() {
 
