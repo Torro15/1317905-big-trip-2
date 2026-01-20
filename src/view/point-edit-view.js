@@ -2,6 +2,11 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatDate } from '../utils/point.js';
 import { POINTS_TYPES } from '../const.js';
 
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
+import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
+
 function createTypeListTemplate(type, currentType, id) {
   const isChecked = type === currentType ? 'checked' : '';
   return `
@@ -142,7 +147,7 @@ function createPointEditViewTemplate(state, offers, selectedOffers, currentDesti
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -166,6 +171,8 @@ export default class PointEditView extends AbstractStatefulView {
   #deleteButtonClick = null;
 
   #rollupBtn = null;
+  #startPicker = null;
+  #endPicker = null;
 
   constructor({point, allOffers, destinations, onCloseClick, onFormSubmit, onDeleteClick}) {
     super();
@@ -200,19 +207,19 @@ export default class PointEditView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-
-
     this.element.querySelector('.event--edit')?.addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__reset-btn')?.addEventListener('click', this.#buttonDeleteClick);
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#typeChangeHandler);
-    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#offerChangeHandler);
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offerChangeHandler);
+    this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price')?.addEventListener('change', this.#priceChangeHandler);
 
     this.#rollupBtn = this.element.querySelector('.event__rollup-btn');
     if (this.#rollupBtn) {
       this.#rollupBtn.addEventListener('click', this.#buttonRollupClick);
     }
+
+    this.#setDatepickers();
   }
 
   #buttonRollupClick = (evt) => {
@@ -260,8 +267,7 @@ export default class PointEditView extends AbstractStatefulView {
     if (!checkbox.matches('.event__offer-checkbox')) {
       return;
     }
-    const offerId = checkbox.name.split('-')[2];
-
+    const offerId = checkbox.name.replace('event-offer-', '');
     let newOffers = [...this._state.offers];
 
     if (checkbox.checked) {
@@ -272,11 +278,50 @@ export default class PointEditView extends AbstractStatefulView {
       newOffers = newOffers.filter((id) => id !== offerId);
     }
 
-
     this.updateElement({
       offers: newOffers
     });
   };
+
+  removeElement() {
+    if (this.#startPicker) {
+      this.#startPicker.destroy();
+      this.#startPicker = null;
+    }
+    if (this.#endPicker) {
+      this.#endPicker.destroy();
+      this.#endPicker = null;
+    }
+    super.removeElement();
+  }
+
+
+  #dateChangeHandler = (selectedDates) => {
+    this._setState({
+      dateFrom: selectedDates[0] ? selectedDates[0].toISOString() : null,
+      dateTo:   selectedDates[1] ? selectedDates[1].toISOString() : null,
+    });
+  };
+
+  #setDatepickers() {
+    const startInput = this.element.querySelector(`#event-start-time-${this._state.id}`);
+    const endInput = this.element.querySelector(`#event-end-time-${this._state.id}`);
+
+    if (!startInput || !endInput) {
+      return;
+    }
+
+    const fpFormat = 'd/m/y H:i';
+
+    this.#startPicker = flatpickr(startInput, {
+      enableTime: true,
+      'time_24hr': true,
+      dateFormat: fpFormat,
+      mode: 'range',
+      plugins: [new rangePlugin({ input: endInput })],
+      onClose: this.#dateChangeHandler,
+    });
+  }
 
   #priceChangeHandler = (evt) => {
     const newPrice = parseInt(evt.target.value, 10) || 0;
