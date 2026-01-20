@@ -324,8 +324,9 @@ export default class PointEditView extends AbstractStatefulView {
   }
 
   #priceChangeHandler = (evt) => {
+    evt.target.value = evt.target.value.replace(/[^0-9]/g, '');
     const newPrice = parseInt(evt.target.value, 10) || 0;
-    this._setState({ basePrice: newPrice });
+    this.updateElement({ basePrice: newPrice });
   };
 
 

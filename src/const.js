@@ -47,5 +47,17 @@ const DATE_FORMATS = {
   attributeFullDate: 'YYYY-MM-DDTHH:mm'
 };
 
+const UserAction = {
+  EDIT_POINT: 'EDIT_TASK',
+  UPDATE_POINT: 'UPDATE_TASK',
+  ADD_POINT: 'ADD_TASK',
+  DELETE_POINT: 'DELETE_TASK',
+};
 
-export {POINTS_TYPES, EMPTY_POINT, FilterType, Mode, SortType, SORT_ITEMS, DATE_FORMATS };
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export {POINTS_TYPES, EMPTY_POINT, FilterType, Mode, SortType, SORT_ITEMS, DATE_FORMATS, UserAction, UpdateType };
