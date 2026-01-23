@@ -1,3 +1,4 @@
+import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatDate } from '../utils/point.js';
 import { POINTS_TYPES } from '../const.js';
@@ -100,7 +101,7 @@ function createPointEditViewTemplate(state, offers, selectedOffers, currentDesti
   const endDate = formatDate(dateTo, 'fullDate');
 
   const typesList = POINTS_TYPES.map((pointType) => createTypeListTemplate(pointType, type, id)).join('');
-  const destinationsList = destinations.map((dest) => `<option value="${dest.name}"></option>`).join('');
+  const destinationsList = destinations.map((dest) => `<option value="${he.encode(dest.name)}"></option>`).join('');
   const offersList = createOfferListTemplate(offers, selectedOffers);
   const destinationTemplate = createDestinationTemplate(currentDestination);
   const rollupButton = createOpenedButtonTemplate(state);
@@ -211,7 +212,8 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.querySelector('.event__reset-btn')?.addEventListener('click', this.#buttonDeleteClick);
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offerChangeHandler);
-    this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--destination')?.addEventListener('input', this.#destinationInputHandler);
+    this.element.querySelector('.event__input--destination')?.addEventListener('blur', this.#destinationInputBlurHandler);
     this.element.querySelector('.event__input--price')?.addEventListener('change', this.#priceChangeHandler);
 
     this.#rollupBtn = this.element.querySelector('.event__rollup-btn');
@@ -246,8 +248,7 @@ export default class PointEditView extends AbstractStatefulView {
     });
   };
 
-  #destinationChangeHandler = (evt) => {
-    evt.preventDefault();
+  #destinationInputHandler = (evt) => {
     const selectedName = evt.target.value.trim();
     const selectedDest = this.#destinations.find((dest) => dest.name === selectedName);
 
@@ -255,10 +256,12 @@ export default class PointEditView extends AbstractStatefulView {
       this.updateElement({
         destination: selectedDest.id
       });
-    } else {
-
-      evt.target.value = '';
     }
+  };
+
+  #destinationInputBlurHandler = (evt) => {
+    const currentDest = this.#destinations.find((dest) => dest.id === this._state.destination);
+    evt.target.value = currentDest ? currentDest.name : '';
   };
 
   #offerChangeHandler = (evt) => {

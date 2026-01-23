@@ -2,8 +2,8 @@ const POINTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-
 
 const EMPTY_POINT = {
   basePrice: 0,
-  dateFrom: '',
-  dateTo: '',
+  dateFrom: new Date().setHours(0, 0, 0, 0),
+  dateTo: new Date().setHours(0, 0, 0, 0),
   destination: '',
   isFavorite: false,
   offers: [],
@@ -48,10 +48,10 @@ const DATE_FORMATS = {
 };
 
 const UserAction = {
-  EDIT_POINT: 'EDIT_TASK',
-  UPDATE_POINT: 'UPDATE_TASK',
-  ADD_POINT: 'ADD_TASK',
-  DELETE_POINT: 'DELETE_TASK',
+  EDIT_POINT: 'EDIT_POINT',
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
 };
 
 const UpdateType = {

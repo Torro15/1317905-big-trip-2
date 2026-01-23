@@ -4,8 +4,9 @@ import PointsListView from '../view/points-list-view.js';
 import TripInfoView from '../view/trip-info-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
 import { sortByPrice, sortByTime } from '../utils/sort.js';
-import { SortType, UserAction, UpdateType} from '../const.js';
+import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
 import { filter } from '../utils/filter.js';
 
 export default class TripPresenter {
@@ -16,8 +17,10 @@ export default class TripPresenter {
 
   #tripPoints = [];
   #allDestinations = [];
+  #allOffers = [];
 
   #pointPresenters = new Map();
+  #newPointPresenter = null;
 
   #currentSortType = SortType.DEFAULT;
 
@@ -59,8 +62,31 @@ export default class TripPresenter {
 
   init() {
     this.#allDestinations = [...this.#pointsModel.destinations];
+    this.#allOffers = this.#pointsModel.offers;
+
+    this.#newPointPresenter = new NewPointPresenter({
+      pointListContainer: this.#pointsListView.element,
+      allDestinations: this.#allDestinations,
+      offers: this.#allOffers,
+      onDataChange: this.#handleViewAction,
+      onDestroy: this.#handleNewPointDestroy
+    });
+
     this.#handleModelEvent();
   }
+
+  createPoint() {
+    this.#currentSortType = SortType.DEFAULT;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#handleModeChange();
+    this.#newPointPresenter.init();
+  }
+
+  #handleNewPointDestroy = () => {
+    const newEventButton = document.querySelector('.trip-main__event-add-btn');
+    newEventButton.disabled = false;
+    this.#handleModelEvent(UpdateType.MINOR);
+  };
 
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
@@ -93,6 +119,7 @@ export default class TripPresenter {
 
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
+    this.#newPointPresenter.destroy();
   };
 
   #handleSortTypeChange = (sortType) => {
@@ -175,9 +202,5 @@ export default class TripPresenter {
       remove(this.#noPointsView);
       this.#noPointsView = null;
     }
-  }
-
-  #clearBoard() {
-    this.#clearPointsList();
   }
 }
