@@ -103,8 +103,7 @@ export default class TripPresenter {
 
     this.#tripPoints = this.points;
     this.#clearPointsList();
-    this.#renderPointsList();
-    this.#renderPoints();
+    this.#renderApp();
   };
 
   #handleModelEvent = (updateType) => {
@@ -130,8 +129,7 @@ export default class TripPresenter {
     this.#currentSortType = sortType;
     this.#tripPoints = this.points;
     this.#clearPointsList();
-    this.#renderPointsList();
-    this.#renderPoints();
+    this.#renderApp();
   };
 
   #renderApp() {
@@ -202,5 +200,10 @@ export default class TripPresenter {
       remove(this.#noPointsView);
       this.#noPointsView = null;
     }
+    if (this.#sortView) {
+      remove(this.#sortView);
+      this.#sortView = null;
+    }
   }
+
 }
