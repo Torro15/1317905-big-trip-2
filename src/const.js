@@ -1,5 +1,3 @@
-const POINTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-
 const now = new Date();
 now.setSeconds(0, 0);
 
@@ -12,6 +10,7 @@ const EMPTY_POINT = {
   offers: [],
   type: 'flight'
 };
+const POINTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const FilterType = {
   EVERYTHING: 'everything',

@@ -106,6 +106,8 @@ function createPointEditViewTemplate(state, offers, selectedOffers, currentDesti
   const destinationTemplate = createDestinationTemplate(currentDestination);
   const rollupButton = createOpenedButtonTemplate(state);
 
+  const isEdit = !id ? 'Cancel' : 'Delete';
+
   return `
     <li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -152,7 +154,7 @@ function createPointEditViewTemplate(state, offers, selectedOffers, currentDesti
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__reset-btn" type="reset">${isEdit}</button>
           ${rollupButton}
         </header>
         <section class="event__details">

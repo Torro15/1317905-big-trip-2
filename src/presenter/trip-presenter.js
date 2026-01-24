@@ -29,6 +29,8 @@ export default class TripPresenter {
   #tripInfoView = new TripInfoView();
   #noPointsView = null;
 
+  #isCreating = false;
+
   constructor({ tripEventsContainer, pointsModel, filterModel, tripInfoContainer }) {
     this.#mainContainer = tripEventsContainer;
     this.#pointsModel = pointsModel;
@@ -79,13 +81,23 @@ export default class TripPresenter {
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
+    if (this.#tripPoints.length === 0) {
+      remove(this.#noPointsView);
+      this.#noPointsView = null;
+      render(this.#pointsListView, this.#mainContainer);
+    }
+    this.#isCreating = true;
     this.#newPointPresenter.init();
   }
 
   #handleNewPointDestroy = () => {
     const newEventButton = document.querySelector('.trip-main__event-add-btn');
     newEventButton.disabled = false;
-    this.#handleModelEvent(UpdateType.MINOR);
+    if (this.#isCreating && this.points.length === 0) {
+      remove(this.#pointsListView);
+      this.#renderNoPoints();
+    }
+    this.#isCreating = false;
   };
 
   #handleViewAction = (actionType, updateType, update) => {
