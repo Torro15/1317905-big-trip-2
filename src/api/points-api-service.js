@@ -22,7 +22,7 @@ export default class PointsApiService extends ApiService {
 
   async addPoint(point) {
     const response = await this._load({
-      url: 'points',
+      url: ApiRoute.POINTS,
       method: Method.POST,
       body: JSON.stringify(this.#adaptToServer(point)),
       headers: new Headers({'Content-Type': 'application/json'}),
@@ -35,7 +35,7 @@ export default class PointsApiService extends ApiService {
 
   async deletePoint(point) {
     const response = await this._load({
-      url: `points/${point.id}`,
+      url: `${ApiRoute.POINTS}/${point.id}`,
       method: Method.DELETE,
     });
 
