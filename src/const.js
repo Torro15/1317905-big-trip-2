@@ -3,8 +3,8 @@ now.setSeconds(0, 0);
 
 const EMPTY_POINT = {
   basePrice: 0,
-  dateFrom: now.toISOString(),
-  dateTo: now.toISOString(),
+  dateFrom: new Date(),
+  dateTo: new Date(),
   destination: '',
   isFavorite: false,
   offers: [],
