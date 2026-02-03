@@ -69,5 +69,11 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
 
-export {AUTHORIZATION, END_POINT, POINTS_TYPES, EMPTY_POINT, FilterType, Mode, SortType, SORT_ITEMS, DATE_FORMATS, UserAction, UpdateType, TimeLimit };
+export {AUTHORIZATION, END_POINT, POINTS_TYPES, EMPTY_POINT, FilterType, Mode, SortType, SORT_ITEMS, DATE_FORMATS, UserAction, UpdateType, TimeLimit, Method };
