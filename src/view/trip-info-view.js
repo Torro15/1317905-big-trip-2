@@ -23,10 +23,6 @@ const getRouteTitle = (points, destinations) => {
     }
   });
 
-  if (cityNames.length === 0) {
-    return 'No events';
-  }
-
   if (cityNames.length === MIN_CITY) {
     return cityNames[0];
   }
@@ -40,9 +36,6 @@ const getRouteTitle = (points, destinations) => {
 
 
 const getTripDates = (points) => {
-  if (!points || points.length === 0) {
-    return '—';
-  }
 
   const start = points[0]?.dateFrom;
   const end = points[points.length - 1]?.dateTo;
@@ -57,23 +50,17 @@ const getTripDates = (points) => {
   return startStr === endStr ? startStr : `${startStr} — ${endStr}`;
 };
 
-const getTotalPrice = (points, getSelectedOffers) => {
-  if (!points || points.length === 0) {
-    return 0;
+const getTotalPrice = (points, getSelectedOffers) => points.reduce((total, point) => {
+  let pointCost = Number(point.basePrice) || 0;
+
+  const selectedOffers = getSelectedOffers(point.type, point.offers || []);
+
+  if (selectedOffers?.length) {
+    pointCost += selectedOffers.reduce((sum, offer) => sum + (Number(offer.price) || 0), 0);
   }
 
-  return points.reduce((total, point) => {
-    let pointCost = Number(point.basePrice) || 0;
-
-    const selectedOffers = getSelectedOffers(point.type, point.offers || []);
-
-    if (selectedOffers?.length) {
-      pointCost += selectedOffers.reduce((sum, offer) => sum + (Number(offer.price) || 0), 0);
-    }
-
-    return total + pointCost;
-  }, 0);
-};
+  return total + pointCost;
+}, 0);
 
 
 const createTripInfoViewTemplate = (points, destinations, getSelectedOffers) => {

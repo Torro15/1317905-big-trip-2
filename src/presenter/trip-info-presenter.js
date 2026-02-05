@@ -1,6 +1,6 @@
-
-import { render, replace, RenderPosition } from '../framework/render.js';
+import { render, replace, remove, RenderPosition } from '../framework/render.js';
 import TripInfoView from '../view/trip-info-view.js';
+import { UpdateType } from '../const.js';
 
 export default class TripInfoPresenter {
   #tripInfoContainer = null;
@@ -16,36 +16,30 @@ export default class TripInfoPresenter {
     this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
-
   init() {
-
-    this.#tripInfoComponent = new TripInfoView({
-      points: [],
-      destinations: [],
-      getSelectedOffers: () => []
-    });
-
-    render(this.#tripInfoComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
-
-    if (this.#pointsModel.points.length > 0 || this.#pointsModel.destinations.length > 0) {
-      this.#isModelReady = true;
-      this.#updateInfo();
-    }
+    this.#checkAndRender();
   }
 
   #handleModelEvent = (updateType) => {
-    if (updateType === 'INIT') {
+    if (updateType === UpdateType.INIT) {
       this.#isModelReady = true;
     }
-
     if (this.#isModelReady) {
-      this.#updateInfo();
+      this.#checkAndRender();
     }
   };
 
-  #updateInfo() {
+  #checkAndRender() {
     const points = this.#pointsModel.points || [];
     const destinations = this.#pointsModel.destinations || [];
+
+    if (points.length === 0) {
+      if (this.#tripInfoComponent) {
+        remove(this.#tripInfoComponent);
+        this.#tripInfoComponent = null;
+      }
+      return;
+    }
 
     const newComponent = new TripInfoView({
       points,
@@ -53,7 +47,7 @@ export default class TripInfoPresenter {
       getSelectedOffers: this.#pointsModel.getSelectedOffers.bind(this.#pointsModel)
     });
 
-    if (this.#tripInfoComponent?.element?.parentElement) {
+    if (this.#tripInfoComponent) {
       replace(newComponent, this.#tripInfoComponent);
     } else {
       render(newComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
@@ -62,8 +56,7 @@ export default class TripInfoPresenter {
     this.#tripInfoComponent = newComponent;
   }
 
-
   update() {
-    this.#updateInfo();
+    this.#checkAndRender();
   }
 }
